@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<style type="text/css">
+		#map {
+			width: 600px;
+			height: 600px;
+			border: 1px solid #F2F2F2;
+			background-color: #EEEEEE;
+			border-radius: 15px;
+			position: relative;
+			margin: 0 auto;
+		}
+		.food {
+			width: 20px;
+			height: 20px;
+			background-color: red;
+			position: absolute;
+		}
+		.snake {
+			width: 20px;
+			height: 20px;
+			background-color: #333333;
+			position: absolute;
+		}
+	</style>
+	<body>
+		<h2 style="text-align: center;">李志立编写贪吃蛇</h2>
+		<p style="text-align: center;">
+			自己编写贪吃蛇，我的邮箱，lizhilimaster@163.com
+		</p>
+		<div id="map">
+		</div>
+		<audio id="bof"  autoplay="autoplay" loop="loop">
+				  <source src="beijing.wav"  type="audio/wav" />
+				</audio>
+		<script crossorigin="anonymous" integrity="sha384-rY/jv8mMhqDabXSo+UCggqKtdmBfd3qC2/KvyTDNQ6PcUJXaxK1tMepoQda4g5vB"
+		 src="https://lib.baomitu.com/jquery/2.2.4/jquery.min.js"></script>
+		<script type="text/javascript">
+			function RandomNumBoth() { //基本随机数 400 之内的 20*20 步长为20
+				var num = Math.floor(Math.random() * 30); //四舍五入
+				return num * 20;
+			}
+			//显示 蛇
+			let fan = 'left'; //默认反方向，就是不能点击方向不能后退
+			let snakearr = [
+				[20, 20],
+				[20, 40],
+				[20, 60],
+				[20, 80]
+			];
+			//默认蛇 加载
+			function snake() {
+				$(".snake").remove();
+				for (let s of snakearr) {
+					$("#map").append($("<div class='snake'></div>").css('top', s[0]).css('left', s[1]));
+				}
+			}
+			snake()
+			let foodarr = [];
+			//显示 食物 随机
+			function food() {
+				$(".food").remove();
+				foodarr[0] = RandomNumBoth();
+				foodarr[1] = RandomNumBoth();
+				//判断是否 有覆盖问题 ？
+				for (let s of snakearr) {
+					if (s.toString() == foodarr.toString()) {
+						food();
+					}
+				}
+				let food = $("<div class='food'></div>").css('top', foodarr[0]).css('left', foodarr[1]);
+				$("#map").append(food);
+			}
+			food();
+			// 移动 蛇
+			document.onkeydown = function() {
+				var code;
+				if (window.event) {
+					code = window.event.keyCode;
+				} else {
+					code = event.keyCode;
+				}
+				snake_code(code);
+			};
+			function snake_code(code) {
+				switch (code) {
+					case 37:
+						//左
+						if (fan != 'left') {
+							fan = 'right';
+						}
+						break;
+					case 38:
+						//上
+						if (fan != 'up') {
+							fan = 'down';
+							//console.log(4444);
+						}
+						break;
+					case 39:
+						//右
+						if (fan != 'right') {
+							fan = 'left';
+							//	console.log(4444);
+						}
+						break;
+					case 40:
+						//下
+						if (fan != 'down') {
+							fan = 'up';
+							//console.log(4444);
+						}
+						break;
+				}
+				if (!int) {
+					snake_move()
+				}
+			}
+			let int;
+			//移动 蛇
+			function snake_move() {
+				int = setInterval(function() {
+					//console.log(fan);
+					if (fan == 'left') {
+						for (let s in snakearr) {
+							if (s == snakearr.length - 1) { //最后一个
+								snakearr[s][1] = snakearr[s][1] + 20
+							} else {
+								snakearr[s][0] = snakearr[parseInt(s) + 1][0]
+								snakearr[s][1] = snakearr[parseInt(s) + 1][1]
+							}
+						}
+					}
+					if (fan == 'right') {
+						for (let s in snakearr) {
+							if (s == snakearr.length - 1) { //最后一个
+								snakearr[s][1] = snakearr[s][1] - 20
+							} else {
+								snakearr[s][0] = snakearr[parseInt(s) + 1][0]
+								snakearr[s][1] = snakearr[parseInt(s) + 1][1]
+							}
+						}
+					}
+					if (fan == 'up') {
+						for (let s in snakearr) {
+							if (s == snakearr.length - 1) { //最后一个
+								snakearr[s][0] = snakearr[s][0] + 20
+							} else {
+								snakearr[s][0] = snakearr[parseInt(s) + 1][0]
+								snakearr[s][1] = snakearr[parseInt(s) + 1][1]
+							}
+						}
+					}
+					if (fan == 'down') {
+						for (let s in snakearr) {
+							if (s == snakearr.length - 1) { //最后一个
+								snakearr[s][0] = snakearr[s][0] - 20
+							} else {
+								snakearr[s][0] = snakearr[parseInt(s) + 1][0]
+								snakearr[s][1] = snakearr[parseInt(s) + 1][1]
+							}
+						}
+					}
+					if (mm(snakearr)) { //自己吃自己
+						alert('你吃自己了，你输了！')
+						window.clearInterval(int);
+						return false
+					}
+					for (let s of snakearr) {
+						if (s[0] > (600 - 20) || s[0] < 0 || s[1] > (600 - 20) || s[1] < 0) {
+							alert('你撞墙了，你输了！')
+							window.clearInterval(int);
+							return false
+						}
+						if (s.toString() == foodarr.toString()) {
+							//吃到食物
+							let fo;
+							if (fan == 'left') {
+								fo = [foodarr[0], foodarr[1] + 20];
+							}
+							if (fan == 'right') {
+								fo = [foodarr[0], foodarr[1] - 20];
+							}
+							if (fan == 'up') {
+								fo = [foodarr[0] + 20, foodarr[1]];
+							}
+							if (fan == 'down') {
+								fo = [foodarr[0] - 20, foodarr[1]];
+							}
+							snakearr.push(fo)
+							food(); //生成食物
+						}
+					}
+					snake()
+				}, 300)
+			}
+			//判断是否有重复元素
+			function mm(a) {
+				let naw = [];
+				for (let s of a) {
+					naw.push(s.toString())
+				}
+				return /(\x0f[^\x0f]+)\x0f[\s\S]*\1/.test("\x0f" + naw.join("\x0f\x0f") + "\x0f");
+			}
+		</script>
+	</body>
+</html>
