@@ -40,10 +40,6 @@
 		<script crossorigin="anonymous" integrity="sha384-rY/jv8mMhqDabXSo+UCggqKtdmBfd3qC2/KvyTDNQ6PcUJXaxK1tMepoQda4g5vB"
 		 src="https://lib.baomitu.com/jquery/2.2.4/jquery.min.js"></script>
 		<script type="text/javascript">
-			function RandomNumBoth() { //基本随机数 400 之内的 20*20 步长为20
-				var num = Math.floor(Math.random() * 30); //四舍五入
-				return num * 20;
-			}
 			//显示 蛇
 			let fan = 'left'; //默认反方向，就是不能点击方向不能后退
 			let snakearr = [
@@ -52,6 +48,10 @@
 				[20, 60],
 				[20, 80]
 			];
+			let foodarr = [];
+			let int;
+			snake()
+			food();
 			//默认蛇 加载
 			function snake() {
 				$(".snake").remove();
@@ -59,8 +59,6 @@
 					$("#map").append($("<div class='snake'></div>").css('top', s[0]).css('left', s[1]));
 				}
 			}
-			snake()
-			let foodarr = [];
 			//显示 食物 随机
 			function food() {
 				$(".food").remove();
@@ -75,7 +73,7 @@
 				let food = $("<div class='food'></div>").css('top', foodarr[0]).css('left', foodarr[1]);
 				$("#map").append(food);
 			}
-			food();
+			
 			// 移动 蛇
 			document.onkeydown = function() {
 				var code;
@@ -89,30 +87,23 @@
 			function snake_code(code) {
 				switch (code) {
 					case 37:
-						//左
 						if (fan != 'left') {
 							fan = 'right';
 						}
 						break;
 					case 38:
-						//上
 						if (fan != 'up') {
 							fan = 'down';
-							//console.log(4444);
 						}
 						break;
 					case 39:
-						//右
 						if (fan != 'right') {
 							fan = 'left';
-							//	console.log(4444);
 						}
 						break;
 					case 40:
-						//下
 						if (fan != 'down') {
 							fan = 'up';
-							//console.log(4444);
 						}
 						break;
 				}
@@ -120,11 +111,10 @@
 					snake_move()
 				}
 			}
-			let int;
+			
 			//移动 蛇
 			function snake_move() {
 				int = setInterval(function() {
-					//console.log(fan);
 					if (fan == 'left') {
 						for (let s in snakearr) {
 							if (s == snakearr.length - 1) { //最后一个
@@ -205,6 +195,11 @@
 					naw.push(s.toString())
 				}
 				return /(\x0f[^\x0f]+)\x0f[\s\S]*\1/.test("\x0f" + naw.join("\x0f\x0f") + "\x0f");
+			}
+			//生成随机数
+			function RandomNumBoth() { //基本随机数 400 之内的 20*20 步长为20
+				var num = Math.floor(Math.random() * 30); //四舍五入
+				return num * 20;
 			}
 		</script>
 	</body>
